@@ -9,8 +9,8 @@
     "Slang::AltTernary": "lib/Slang/AltTernary.pm6"
   },
   "resources" : [ ],
-  "source-url" : "",
+  "source-url" : "https://github.com/mryan/perl6-Slang-AltTernary.git",
   "tags" : [ ],
   "test-depends" : [ "Test" ],
-  "version" : "0.0.2"
+  "version" : "0.0.3"
 }
