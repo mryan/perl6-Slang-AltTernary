@@ -1,18 +1,12 @@
-use nqp;
-
 sub EXPORT(|) {
-  # my sub lk(Mu \h, \k) {
-  #     nqp::atkey(nqp::findmethod(h, 'hash')(h), k)
-  # }
 
     role AltTern::Grammar {
-        # All of what follows is stolen from the Rakudo grammar
+        # All of what follows is stolen from the Rakudo grammar - while only half knowing what I'm doing
 
         token term:sym<No>     { 'No' <?before \s> }  # actual error produced inside infix:<?⁈ No>
 
         token infix:sym<?⁈ No> {
-            # :my %conditional := nqp::hash('prec', 'j=', 'assoc', 'right', 'dba', 'conditional', 'fiddly', 1, 'thunky', '.tt');
-            :my %conditional := %('prec', 'j=', 'assoc', 'right', 'dba', 'conditional', 'fiddly', 1, 'thunky', '.tt');
+            :my %conditional = ( :prec<j=> , :assoc<right> , :dba<conditional> , :fiddly<1> , :thunky<.tt> );
             :my $*GOAL := 'No';
             $<sym>='?⁈'
             <.ws> 'Yes' <.ws>
@@ -25,12 +19,12 @@ sub EXPORT(|) {
         }
     }
 
-    my Mu $MAIN-grammar := nqp::atkey(%*LANG, 'MAIN');
-    my $grammar := $MAIN-grammar.^mixin(AltTern::Grammar);
-    my Mu $MAIN-actions := nqp::atkey(%*LANG, 'MAIN-actions');
-    my $actions := $MAIN-actions;
+    my Mu $MAIN-grammar := %*LANG<MAIN> ;
+    my $extended-grammar := $MAIN-grammar.^mixin(AltTern::Grammar);
+    # my Mu $MAIN-actions := %*LANG<MAIN-actions> ;
+    # my $extended-actions := $MAIN-actions;
 
-    $*LANG.define_slang('MAIN', $grammar , $actions);
+    $*LANG.define_slang('MAIN', $extended-grammar , %*LANG<MAIN-actions>);
 
     {}
 }
