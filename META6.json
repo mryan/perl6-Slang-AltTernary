@@ -10,7 +10,7 @@
   },
   "resources" : [ ],
   "source-url" : "https://github.com/mryan/perl6-Slang-AltTernary.git",
-  "tags" : [ ],
+  "tags" : [ "Slang" , "Grammar" ],
   "test-depends" : [ "Test" ],
   "version" : "0.0.3"
 }
