@@ -1,19 +1,16 @@
 {
-  "authors" : [
-    "Martin Ryan"
-  ],
-  "build-depends" : [ ],
+  "authors" : [ "Martin Ryan" ],
   "depends" : [ ],
-  "description" : "blah blah blah",
+  "description" : "Alternative Ternary Experssion",
   "license" : "Artistic-2.0",
   "name" : "Slang::AltTernary",
   "perl" : "6.c",
   "provides" : {
-    "Slang::AltTernary" : "lib/Slang/AltTernary.pm6"
+    "Slang::AltTernary": "lib/Slang/AltTernary.pm6"
   },
   "resources" : [ ],
   "source-url" : "",
   "tags" : [ ],
-  "test-depends" : [ ],
-  "version" : "0.0.1"
+  "test-depends" : [ "Test" ],
+  "version" : "0.0.2"
 }
