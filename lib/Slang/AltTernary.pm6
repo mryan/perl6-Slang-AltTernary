@@ -1,62 +1,36 @@
-use v6.c;
-unit class Slang::AltTernary:ver<0.2>;
-
-enum AltBool is export (:Yes , :!No);
-
-=begin pod
-
-=head1 NAME
-
-Slang::AltTernary - blah blah blah
-
-=head1 SYNOPSIS
-
-  use Slang::AltTernary;
-
-=head1 DESCRIPTION
-
-Slang::AltTernary is ...
-
-=head1 AUTHOR
-
-Martin Ryan <mryan50@fastmail.fm>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2018 Martin Ryan
-
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
-=end pod
+use nqp;
 
 sub EXPORT(|) {
-use nqp;
-my %conditional := nqp::hash('prec', 'j=', 'assoc', 'right', 'dba', 'conditional', 'fiddly', 1, 'thunky', '.tt');
+  # my sub lk(Mu \h, \k) {
+  #     nqp::atkey(nqp::findmethod(h, 'hash')(h), k)
+  # }
 
     role AltTern::Grammar {
+        # All of what follows is stolen from the Rakudo grammar
+
+        token term:sym<No>     { 'No' <?before \s> }  # actual error produced inside infix:<?⁈ No>
 
         token infix:sym<?⁈ No> {
+            # :my %conditional := nqp::hash('prec', 'j=', 'assoc', 'right', 'dba', 'conditional', 'fiddly', 1, 'thunky', '.tt');
+            :my %conditional := %('prec', 'j=', 'assoc', 'right', 'dba', 'conditional', 'fiddly', 1, 'thunky', '.tt');
             :my $*GOAL := 'No';
             $<sym>='?⁈'
             <.ws> 'Yes' <.ws>
             <EXPR('i=')>
             [  
             || 'No'
-            || <?before '::' <.-[=]> >       { self.typed_panic: "X::Syntax::ConditionalOperator::SecondPartInvalid", second-part => "::" }
-            || <?before ':' <.-[=\w]> >      { self.typed_panic: "X::Syntax::ConditionalOperator::SecondPartInvalid", second-part => ":"  }
-            || <infixish>                    { self.typed_panic: "X::Syntax::ConditionalOperator::PrecedenceTooLoose", operator => ~$<infixish> }
-            || <?{ ~$<EXPR> ~~ / 'No' / }>   { self.typed_panic: "X::Syntax::ConditionalOperator::SecondPartGobbled" }
-            || <?before \N*? [\n\N*?]? 'No'> { self.typed_panic: "X::Syntax::Confused", reason => "Confused: Bogus code found before the 'No' of the conditional operator" }
-            ||                               { self.typed_panic: "X::Syntax::Confused", reason => "Confused: Found ?⁈ without 'No' clause" }
+            || { self.typed_panic: "X::Syntax::Confused", reason => "Confused: Found ?⁈ without 'No' clause" }
             ]
             <O(|%conditional, :reducecheck<ternary>, :pasttype<if>)>
         }
     }
 
-    $*LANG.define_slang(
-      'MAIN',
-      $*LANG.slang_grammar('MAIN').^mixin(AltTern::Grammar),
-      $*LANG.slang_actions('MAIN'),
-    );
+    my Mu $MAIN-grammar := nqp::atkey(%*LANG, 'MAIN');
+    my $grammar := $MAIN-grammar.^mixin(AltTern::Grammar);
+    my Mu $MAIN-actions := nqp::atkey(%*LANG, 'MAIN-actions');
+    my $actions := $MAIN-actions;
+
+    $*LANG.define_slang('MAIN', $grammar , $actions);
+
     {}
 }

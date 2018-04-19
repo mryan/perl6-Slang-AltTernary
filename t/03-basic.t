@@ -1,13 +1,8 @@
 use v6.c;
 use Test;
-# use Slang::AltTernary;
+use Slang::AltTernary;
 
-plan 4;
-
-enum AltBool(:Yes , :!No);
-
-isa-ok Yes, AltBool, 'Enum Yes ok' ;
-isa-ok No,  AltBool, 'Enum No  ok' ;
+plan 2;
 
 sub run_altTern($compare) {
     $compare < 100 ?⁈ 
